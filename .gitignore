@@ -1,15 +1,27 @@
-node_modules
-.next
-out
-.DS_Store
+# dependencies
+node_modules/
+
+# build output
+dist/
+dist-ssr/
+
+# vercel
+.vercel/
+
+# logs
 *.log
-.env*
-next-env.d.ts
-.devlog.txt
-.playwright-mcp
+npm-debug.log*
 
-# Heavy source videos — not needed at runtime (frames are committed under public/frames).
-# Re-extract with: npm run frames:extract -- "videos/<file>.mp4"
-videos/
+# editor / os
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.suo
+*.sw?
 
-.vercel
+# large local source media — encoded deploy assets live in incruiter2/public/videos/
+/videos/
+
+# next.js build cache (legacy incruiter1)
+.next/

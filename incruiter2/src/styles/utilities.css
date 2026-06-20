@@ -1,0 +1,1073 @@
+/* ========================================================================
+   Typography helpers
+   ===================================================================== */
+/* Big confident brand / CTA moment */
+.h-hero {
+  font-family: var(--font-display);
+  font-size: var(--step-5);
+  line-height: 0.95;
+  letter-spacing: -0.035em;
+  font-weight: 800;
+  margin: 0;
+  text-wrap: balance;
+}
+/* A single declarative line (problem / turn / vision) */
+.h-statement {
+  font-family: var(--font-display);
+  font-size: var(--step-4);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-weight: 700;
+  margin: 0;
+  max-width: 16ch;
+  text-wrap: balance;
+}
+.eyebrow {
+  font-size: var(--step--1);
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  font-weight: 600;
+  margin: 0;
+  opacity: 0.85;
+}
+.lead {
+  font-size: var(--step-1);
+  color: var(--mist);
+  line-height: 1.4;
+  max-width: 46ch;
+  margin: 1.5rem 0 0;
+  font-weight: 400;
+}
+.text-grad {
+  background: linear-gradient(120deg, var(--white), var(--cyan));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Glass panel behind copy so it's legible over any film frame */
+.panel {
+  position: relative;
+  padding: clamp(1.5rem, 4vw, 3.5rem);
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgba(10, 15, 28, 0.42), rgba(5, 7, 13, 0.32));
+  border: 1px solid rgba(174, 185, 212, 0.12);
+  backdrop-filter: blur(2px);
+}
+
+/* far-below-the-fold sections skip offscreen layout/paint work */
+.cv-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: 100svh;
+}
+
+/* ========================================================================
+   Nav + scroll progress
+   ===================================================================== */
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: clamp(0.9rem, 2.4vw, 1.6rem) var(--gutter);
+  pointer-events: none;
+}
+.nav a,
+.nav button {
+  pointer-events: auto;
+}
+.nav__brand {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  font-size: var(--step-0);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.nav__dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--cyan);
+  box-shadow: 0 0 14px var(--glow);
+}
+.nav__cta {
+  font-size: var(--step--1);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  padding: 0.55em 1.1em;
+  border-radius: 999px;
+  border: 1px solid rgba(174, 185, 212, 0.28);
+  color: var(--white);
+  transition: border-color 0.25s ease, background 0.25s ease;
+}
+.nav__cta:hover {
+  border-color: var(--cyan);
+  background: rgba(56, 225, 255, 0.08);
+}
+
+.progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  z-index: 50;
+  background: transparent;
+}
+.progress__bar {
+  height: 100%;
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+  background: linear-gradient(90deg, var(--blue), var(--cyan));
+  will-change: transform;
+}
+
+.skip-link {
+  position: fixed;
+  top: -60px;
+  left: var(--gutter);
+  z-index: 100;
+  background: var(--blue);
+  color: var(--white);
+  padding: 0.6em 1em;
+  border-radius: 8px;
+  transition: top 0.2s ease;
+}
+.skip-link:focus {
+  top: 0.6rem;
+}
+
+/* ========================================================================
+   Kinetic heading (SplitType targets)
+   ===================================================================== */
+.kinetic .line {
+  overflow: hidden;
+  padding-bottom: 0.04em; /* avoid clipping descenders while masking the rise */
+}
+.kinetic .char,
+.kinetic .word {
+  display: inline-block;
+  will-change: transform;
+}
+
+/* ========================================================================
+   S2 — Problem kinetic lines
+   ===================================================================== */
+.problem__list {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.4rem, 5vh, 3.4rem);
+  width: 100%;
+}
+.problem__row {
+  display: flex;
+  align-items: baseline;
+  gap: clamp(0.6rem, 2vw, 1.4rem);
+  flex-wrap: wrap;
+  will-change: transform;
+}
+.problem__big {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--step-4);
+  letter-spacing: -0.025em;
+  line-height: 0.95;
+}
+.problem__small {
+  font-size: var(--step-1);
+  color: var(--mist);
+}
+
+/* ========================================================================
+   S3 — Turn light bar
+   ===================================================================== */
+.turn__inner {
+  position: relative;
+  text-align: center;
+  display: grid;
+  gap: 1.5rem;
+  justify-items: center;
+}
+.turn__bar {
+  height: 2px;
+  width: min(80vw, 640px);
+  transform: scaleX(0);
+  transform-origin: 50% 50%;
+  background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+  box-shadow: 0 0 24px var(--glow);
+}
+
+/* ========================================================================
+   S4 — Products gallery
+   ===================================================================== */
+.products {
+  position: relative;
+  z-index: 2;
+  overflow: hidden;
+}
+.products__head {
+  position: absolute;
+  top: clamp(4.5rem, 12vh, 8rem);
+  left: var(--gutter);
+  z-index: 3;
+  pointer-events: none;
+}
+.products__head .eyebrow {
+  margin-bottom: 0.4rem;
+}
+.products__head h2 {
+  font-family: var(--font-display);
+  font-size: var(--step-2);
+  letter-spacing: -0.02em;
+  margin: 0;
+  max-width: 16ch;
+}
+.products__track {
+  display: flex;
+  gap: clamp(1rem, 3vw, 3rem);
+  padding-inline: var(--gutter);
+  align-items: center;
+  min-height: 100svh;
+  will-change: transform;
+}
+
+.product-card {
+  flex: 0 0 auto;
+  width: clamp(260px, 78vw, 420px);
+  min-height: clamp(340px, 56vh, 480px);
+  border-radius: 24px;
+  padding: clamp(1.4rem, 3vw, 2.2rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: linear-gradient(180deg, rgba(10, 15, 28, 0.72), rgba(5, 7, 13, 0.66));
+  border: 1px solid rgba(174, 185, 212, 0.14);
+  box-shadow: 0 30px 80px -40px rgba(0, 0, 0, 0.8);
+  will-change: transform, opacity;
+  transform: scale(0.86);
+  opacity: 0.55;
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.55s ease,
+    box-shadow 0.55s ease;
+  position: relative;
+  overflow: hidden;
+}
+@media (min-width: 1024px) {
+  .product-card.is-active {
+    transform: scale(1);
+    opacity: 1;
+    box-shadow: 0 40px 90px -36px var(--card-accent, rgba(0, 0, 0, 0.8));
+  }
+}
+.product-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(120% 90% at 0% 0%, var(--card-accent, var(--cyan)),
+      transparent 55%);
+  opacity: 0.16;
+  pointer-events: none;
+}
+.product-card__glyph {
+  width: 54px;
+  height: 54px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.4rem;
+  color: var(--ink);
+  background: var(--card-accent, var(--cyan));
+  box-shadow: 0 0 30px -4px var(--card-accent, var(--glow));
+}
+.product-card__name {
+  font-family: var(--font-display);
+  font-size: var(--step-3);
+  letter-spacing: -0.025em;
+  margin: 1.2rem 0 0.3rem;
+  line-height: 1;
+}
+.product-card__line {
+  font-size: var(--step-1);
+  color: var(--white);
+  font-weight: 600;
+  margin: 0;
+}
+.product-card__metric {
+  font-size: var(--step-0);
+  color: var(--mist);
+  margin: 1.2rem 0 0;
+  line-height: 1.45;
+}
+.product-card__index {
+  font-variant-numeric: tabular-nums;
+  font-size: var(--step--1);
+  color: var(--mist);
+  letter-spacing: 0.2em;
+  margin-top: 1rem;
+}
+
+/* ========================================================================
+   S5 — Proof counters
+   ===================================================================== */
+.proof__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(1.2rem, 4vw, 3rem) clamp(1rem, 3vw, 2.5rem);
+  width: 100%;
+}
+.proof__cell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+.proof__num {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--step-4);
+  letter-spacing: -0.03em;
+  line-height: 0.9;
+  color: var(--white);
+}
+.proof__label {
+  font-size: var(--step-0);
+  color: var(--mist);
+}
+.proof__clients {
+  margin-top: clamp(2rem, 6vh, 4rem);
+  display: flex;
+  align-items: center;
+  gap: clamp(1.2rem, 4vw, 3rem);
+  flex-wrap: wrap;
+  opacity: 0.9;
+}
+.proof__clients span {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--step-1);
+  color: var(--white);
+  opacity: 0.7;
+  letter-spacing: 0.02em;
+}
+.proof__clients-label {
+  font-size: var(--step--1);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--mist);
+}
+
+/* ========================================================================
+   S6 — Vision
+   ===================================================================== */
+.vision__inner {
+  text-align: center;
+  display: grid;
+  gap: 1.4rem;
+  justify-items: center;
+  max-width: 22ch;
+  margin-inline: auto;
+}
+.vision__inner .lead {
+  max-width: 40ch;
+}
+
+/* ========================================================================
+   S7 — CTA + constellation
+   ===================================================================== */
+.cta__inner {
+  text-align: center;
+  display: grid;
+  gap: clamp(1.6rem, 5vh, 3rem);
+  justify-items: center;
+}
+.magnetic {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--step-1);
+  padding: 0.9em 1.8em;
+  border-radius: 999px;
+  color: var(--ink);
+  background: linear-gradient(120deg, var(--cyan), var(--blue-bright));
+  box-shadow: 0 18px 50px -16px var(--glow);
+  will-change: transform;
+  cursor: pointer;
+}
+.magnetic:focus-visible {
+  outline: 3px solid var(--white);
+  outline-offset: 4px;
+}
+.magnetic__arrow {
+  transition: transform 0.25s ease;
+}
+.magnetic:hover .magnetic__arrow {
+  transform: translateX(4px);
+}
+
+.constellation {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: clamp(0.8rem, 2.4vw, 2rem);
+  max-width: 720px;
+}
+.constellation span {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--step-1);
+  color: var(--mist);
+  will-change: transform;
+}
+.cta__memory {
+  font-size: var(--step--1);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--cyan);
+}
+
+/* ========================================================================
+   Custom cursor (desktop only)
+   ===================================================================== */
+.cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 90;
+  pointer-events: none;
+  border-radius: 50%;
+  mix-blend-mode: difference;
+}
+.cursor--dot {
+  width: 7px;
+  height: 7px;
+  background: var(--white);
+  margin: -3.5px 0 0 -3.5px;
+}
+.cursor--ring {
+  width: 38px;
+  height: 38px;
+  margin: -19px 0 0 -19px;
+  border: 1.5px solid var(--white);
+}
+
+/* ========================================================================
+   Responsive
+   ===================================================================== */
+@media (max-width: 1023px) {
+  .products {
+    overflow: visible;
+  }
+  .products__track {
+    flex-direction: column;
+    min-height: auto;
+    gap: clamp(1.2rem, 5vh, 2.4rem);
+    padding-block: clamp(7rem, 18vh, 10rem) clamp(3rem, 8vh, 5rem);
+    align-items: stretch;
+  }
+  .product-card {
+    width: 100%;
+    transform: none;
+    opacity: 1;
+    min-height: auto;
+  }
+  .products__head {
+    position: static;
+    padding-inline: 0;
+    margin-bottom: 1.5rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .proof__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .problem__row {
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+}
+
+/* hide custom cursor where there's no fine pointer */
+@media (hover: none), (pointer: coarse) {
+  .cursor {
+    display: none;
+  }
+}
+
+/* ========================================================================
+   STORY — single focal stage (all beats land in ONE centred place)
+   ===================================================================== */
+.story {
+  position: relative;
+  z-index: 2;
+}
+.story__stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  transition: opacity 0.9s ease 0.15s;
+}
+/* hidden behind the entry gate until the visitor enters */
+.story__stage.is-idle {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease;
+}
+/* gentle focal scrim — just enough so centred copy reads, film stays visible */
+.story__stage::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(46% 40% at 50% 50%, rgba(5, 7, 13, 0.45), transparent 72%);
+  pointer-events: none;
+}
+/* Legibility: a soft, feathered focal scrim sits directly behind the copy (so text
+   always reads) while the rest of the film stays clear — plus a gentle text shadow. */
+.beat__inner {
+  position: relative;
+  z-index: 0;
+  isolation: isolate;
+  text-shadow: 0 2px 24px rgba(5, 7, 13, 0.6), 0 1px 3px rgba(5, 7, 13, 0.55);
+}
+.beat__inner::before {
+  content: '';
+  position: absolute;
+  inset: -28% -16%;
+  z-index: -1;
+  background: radial-gradient(ellipse 58% 56% at 50% 50%, rgba(5, 7, 13, 0.6),
+      rgba(5, 7, 13, 0.28) 52%, transparent 76%);
+  pointer-events: none;
+}
+
+/* ========================================================================
+   ENTRY GATE — a high-anticipation landing
+   ===================================================================== */
+.gate {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  padding: var(--gutter);
+  transition: opacity 0.9s ease, transform 1s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.9s ease;
+}
+.gate--hidden {
+  opacity: 0;
+  transform: scale(1.08);
+  filter: blur(8px);
+  pointer-events: none;
+}
+.gate__inner {
+  position: relative;
+  z-index: 0;
+  isolation: isolate;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(0.85rem, 2.4vh, 1.5rem);
+  max-width: min(92vw, 660px);
+  text-shadow: 0 2px 24px rgba(5, 7, 13, 0.6);
+}
+.gate__inner::before {
+  content: '';
+  position: absolute;
+  inset: -46% -28%;
+  z-index: -1;
+  background: radial-gradient(ellipse 60% 60% at 50% 50%, rgba(5, 7, 13, 0.66),
+      rgba(5, 7, 13, 0.32) 50%, transparent 78%);
+  pointer-events: none;
+}
+/* staggered cinematic reveal on load */
+.gate:not(.gate--hidden) .gate__inner > * {
+  animation: gateRise 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.gate__inner > *:nth-child(1) { animation-delay: 0.05s; }
+.gate__inner > *:nth-child(2) { animation-delay: 0.16s; }
+.gate__inner > *:nth-child(3) { animation-delay: 0.27s; }
+.gate__inner > *:nth-child(4) { animation-delay: 0.38s; }
+.gate__inner > *:nth-child(5) { animation-delay: 0.5s; }
+.gate__inner > *:nth-child(6) { animation-delay: 0.62s; }
+@keyframes gateRise {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+.gate__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0.5em 1.05em;
+  border-radius: 999px;
+  font-size: var(--step--1);
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--white);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(174, 185, 212, 0.22);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+.gate__badge-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--cyan);
+  box-shadow: 0 0 12px var(--glow);
+  animation: livePulse 1.8s ease-in-out infinite;
+}
+@keyframes livePulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.45; transform: scale(0.7); }
+}
+.gate__title {
+  margin: 0;
+  max-width: 13ch;
+  font-size: clamp(2.6rem, 1.5rem + 4.6vw, 5.6rem);
+}
+.gate__sub {
+  font-size: var(--step-0);
+  color: var(--mist);
+  line-height: 1.45;
+  margin: 0;
+  max-width: 34ch;
+}
+.gate__stats {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  gap: clamp(0.5rem, 1.8vw, 1.2rem);
+  margin: 0.1rem 0 0;
+  color: var(--mist);
+  font-size: var(--step-0);
+}
+.gate__stat {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.4rem;
+}
+.gate__stat b {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--step-1);
+  color: var(--white);
+  letter-spacing: -0.02em;
+}
+.gate__stat:not(:last-child)::after {
+  content: '';
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  margin-left: clamp(0.4rem, 1.4vw, 1rem);
+  background: var(--cyan);
+  opacity: 0.55;
+}
+.gate__teaser {
+  margin: 0.1rem 0 0;
+  font-size: var(--step--1);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--mist);
+  opacity: 0.75;
+}
+
+/* Bright, glowing primary CTA — unmistakably the thing to press */
+.btn-enter {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-top: 0.5rem;
+  padding: 1.05em 2.4em;
+  border-radius: 999px;
+  border: 0;
+  cursor: pointer;
+  isolation: isolate;
+  white-space: nowrap;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--step-1);
+  letter-spacing: 0.005em;
+  color: #04121f;
+  background: linear-gradient(120deg, var(--cyan), var(--blue-bright) 64%, var(--blue));
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.18),
+    0 20px 56px -16px var(--glow), 0 0 50px -14px var(--glow);
+  overflow: hidden;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease;
+  animation: enterPulse 2.8s ease-in-out infinite;
+}
+.btn-enter:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.3),
+    0 26px 70px -16px var(--glow), 0 0 80px -8px var(--glow);
+}
+.btn-enter:focus-visible {
+  outline: 2px solid var(--white);
+  outline-offset: 4px;
+}
+@keyframes enterPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.18),
+      0 20px 56px -16px var(--glow), 0 0 40px -16px var(--glow);
+  }
+  50% {
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.28),
+      0 24px 64px -14px var(--glow), 0 0 86px -8px var(--glow);
+  }
+}
+/* sweeping sheen */
+.btn-enter::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(115deg, transparent 34%, rgba(255, 255, 255, 0.45) 50%,
+      transparent 66%);
+  transform: translateX(-130%);
+  animation: sheen 3.4s ease-in-out infinite;
+}
+@keyframes sheen {
+  0%, 28% { transform: translateX(-130%); }
+  60%, 100% { transform: translateX(130%); }
+}
+.btn-enter__label,
+.btn-enter__arrow {
+  position: relative;
+  z-index: 2;
+}
+.btn-enter__arrow {
+  font-size: 1.05em;
+  transition: transform 0.3s ease;
+}
+.btn-enter:hover .btn-enter__arrow {
+  transform: translateX(4px);
+}
+
+/* ========================================================================
+   SCROLL OVERLAY — black curtain that lifts as the visitor scrolls
+   ===================================================================== */
+.scroll-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(130% 130% at 50% 45%, #070b14, #02040a 70%);
+  pointer-events: none; /* scroll passes straight through to lift it */
+  opacity: 0;
+  visibility: hidden;
+  will-change: opacity;
+}
+.scroll-overlay__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(1.1rem, 3vh, 1.8rem);
+}
+.scroll-overlay__text {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--step-2);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--white);
+}
+.scroll-overlay__cue {
+  width: 16px;
+  height: 16px;
+  border-right: 2px solid var(--cyan);
+  border-bottom: 2px solid var(--cyan);
+  filter: drop-shadow(0 0 10px var(--glow));
+  animation: overlayBob 1.6s ease-in-out infinite;
+}
+@keyframes overlayBob {
+  0%, 100% {
+    transform: rotate(45deg) translate(-3px, -3px);
+    opacity: 0.45;
+  }
+  50% {
+    transform: rotate(45deg) translate(3px, 3px);
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .scroll-overlay__cue {
+    animation: none;
+  }
+}
+
+/* Nav CTA hidden during the gate */
+.nav__cta--hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-6px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+/* Social proof line under the stats */
+.beat__trust {
+  font-size: var(--step--1);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--mist);
+  margin: clamp(0.8rem, 3vh, 1.6rem) 0 0;
+}
+
+.beat {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: clamp(5rem, 12vh, 8rem) var(--gutter);
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.6s ease, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+  will-change: opacity, transform;
+}
+.beat.is-active {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+.beat.is-past {
+  transform: translateY(-28px);
+}
+.beat__inner {
+  width: min(100%, 46ch);
+  margin-inline: auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(1.1rem, 3vh, 1.9rem);
+}
+.beat__inner .lead,
+.beat__center {
+  margin-inline: auto;
+}
+.beat__inner .h-display,
+.beat__inner .h-section {
+  text-wrap: balance;
+}
+
+/* Side-staged beats (products) — dynamic gallery that keeps the film centre clear */
+.beat--left {
+  justify-items: start;
+}
+.beat--right {
+  justify-items: end;
+}
+.beat--left .beat__inner {
+  text-align: left;
+  align-items: flex-start;
+  max-width: 42ch;
+  margin-inline-start: clamp(0.5rem, 7vw, 8rem);
+}
+.beat--right .beat__inner {
+  text-align: right;
+  align-items: flex-end;
+  max-width: 42ch;
+  margin-inline-end: clamp(0.5rem, 7vw, 8rem);
+}
+.beat--left .beat__product-line::after {
+  margin-inline: 0 auto;
+}
+.beat--right .beat__product-line::after {
+  margin-inline: auto 0;
+}
+@media (max-width: 760px) {
+  .beat--left,
+  .beat--right {
+    justify-items: center;
+  }
+  .beat--left .beat__inner,
+  .beat--right .beat__inner {
+    text-align: center;
+    align-items: center;
+    margin-inline: auto;
+  }
+  .beat--left .beat__product-line::after,
+  .beat--right .beat__product-line::after {
+    margin-inline: auto;
+  }
+}
+
+/* Problem beat */
+.beat__problems {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1rem, 4vh, 2.4rem);
+}
+.beat__problems li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.beat__problems li > .text-grad {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--step-4);
+  letter-spacing: -0.025em;
+  line-height: 0.95;
+}
+.beat__problems-small {
+  font-size: var(--step-1);
+  color: var(--mist);
+}
+
+/* Turn beat — light bar reveals when active */
+.beat .turn__bar {
+  transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.1s, opacity 0.5s ease;
+}
+.beat.is-active .turn__bar {
+  transform: scaleX(1);
+  opacity: 1;
+}
+
+/* Product beats */
+.beat__product {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.7rem;
+}
+.beat__product-index {
+  letter-spacing: 0.34em;
+  font-size: var(--step--1);
+  color: var(--accent, var(--cyan));
+  font-variant-numeric: tabular-nums;
+}
+.beat__product-name {
+  font-family: var(--font-display);
+  font-size: var(--step-5);
+  line-height: 0.92;
+  letter-spacing: -0.035em;
+  margin: 0;
+  color: var(--white);
+}
+/* a thin accent underline ties the name to its product colour without low contrast */
+.beat__product-line {
+  position: relative;
+}
+.beat__product-line::after {
+  content: '';
+  display: block;
+  width: 40px;
+  height: 3px;
+  border-radius: 2px;
+  margin: clamp(0.9rem, 2.4vh, 1.4rem) auto 0;
+  background: var(--accent, var(--cyan));
+  box-shadow: 0 0 18px -2px var(--accent, var(--glow));
+}
+.beat__product-line {
+  font-size: var(--step-1);
+  font-weight: 500;
+  color: var(--white);
+  margin: 0;
+}
+
+/* Proof beat */
+.beat__proof-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(1.2rem, 4vw, 2.6rem) clamp(1rem, 3vw, 2.4rem);
+  width: 100%;
+}
+.beat__proof-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+}
+.beat__clients {
+  margin-top: clamp(1.2rem, 4vh, 2.2rem);
+  display: flex;
+  gap: clamp(0.9rem, 3vw, 2rem);
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.beat__clients span:not(.proof__clients-label) {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--step-1);
+  color: var(--white);
+  opacity: 0.72;
+}
+
+/* CTA beat — drifting product constellation */
+.beat__constellation {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: clamp(0.7rem, 2.2vw, 1.6rem);
+  max-width: 680px;
+}
+.beat__constellation span {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--step-1);
+  will-change: transform;
+}
+.beat.is-active .beat__constellation span {
+  animation: floaty 3.4s ease-in-out infinite;
+}
+.beat__constellation span:nth-child(2n) {
+  animation-delay: 0.4s;
+}
+.beat__constellation span:nth-child(3n) {
+  animation-delay: 0.8s;
+}
+@keyframes floaty {
+  0%,
+  100% {
+    transform: translateY(-5px);
+  }
+  50% {
+    transform: translateY(5px);
+  }
+}
+
+@media (max-width: 600px) {
+  /* keep the three proof stats in one tight row */
+  .beat__proof-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+  }
+  .proof__num {
+    font-size: clamp(1.9rem, 9vw, 2.9rem);
+  }
+  .proof__label {
+    font-size: var(--step--1);
+    line-height: 1.2;
+  }
+}
