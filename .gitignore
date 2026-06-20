@@ -23,5 +23,12 @@ npm-debug.log*
 # large local source media — encoded deploy assets live in incruiter2/public/videos/
 /videos/
 
+# test / tooling artifacts
+.playwright-mcp/
+/*.jpeg
+/*.jpg
+incruiter2/*.jpeg
+incruiter2/*.jpg
+
 # next.js build cache (legacy incruiter1)
 .next/
