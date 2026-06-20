@@ -11,3 +11,5 @@ next-env.d.ts
 # Heavy source videos — not needed at runtime (frames are committed under public/frames).
 # Re-extract with: npm run frames:extract -- "videos/<file>.mp4"
 videos/
+
+.vercel
