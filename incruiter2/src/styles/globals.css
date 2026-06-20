@@ -89,18 +89,15 @@ html.lenis body {
   inset: 0;
   z-index: 0;
   overflow: hidden;
-  background: var(--ink);
+  /* poster paints instantly while the frame sequence loads — never a black flash */
+  background: #02040a url('/videos/incruiterblue2-poster.jpg') center / cover no-repeat;
 }
-.film__video {
+.film__canvas {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  object-position: center;
-  transform: translateZ(0);
-  image-rendering: auto;
-  backface-visibility: hidden;
+  display: block;
 }
 /* light top/bottom tint only — keeps the film clearly visible while protecting the nav
    and giving copy a touch of contrast. The middle stays bright. */

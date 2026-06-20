@@ -10,8 +10,8 @@
  * Film playhead, active beat, and the progress bar all read from here, so they stay
  * perfectly in sync with the governed pace.
  */
-export const MIN_DURATION = 30; // seconds — the hard minimum to reach the end
-const REWIND_DURATION = 9; // seconds — full rewind may be faster than forward
+export const MIN_DURATION = 20; // seconds — the hard minimum to reach the end
+const REWIND_DURATION = 7; // seconds — full rewind may be faster than forward
 
 let target = 0;
 let value = 0;
