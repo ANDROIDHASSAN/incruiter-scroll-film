@@ -150,5 +150,5 @@ export const CHAPTER_MARKERS: { at: number; label: string }[] = [
   { at: 0.94, label: "Hire Better" },
 ];
 
-export const FRAME_COUNT = 361;
+export const FRAME_COUNT = 181;
 export const FRAME_PATH = (i: number) => `/frames/frame_${String(i).padStart(5, "0")}.webp`;

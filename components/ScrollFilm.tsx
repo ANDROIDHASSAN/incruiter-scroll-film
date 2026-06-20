@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import Lenis from "lenis";
 import { FrameLoader, type Frame } from "@/lib/FrameLoader";
 import {
@@ -29,9 +29,6 @@ const SCROLL_HEIGHT_DESKTOP = 24000;
 const SCROLL_HEIGHT_MOBILE = 16000;
 
 export default function ScrollFilm() {
-  const [pct, setPct] = useState(0);
-  const [ready, setReady] = useState(false);
-
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const scrimRef = useRef<HTMLDivElement | null>(null);
   const trackRef = useRef<HTMLDivElement | null>(null);
@@ -109,6 +106,7 @@ export default function ScrollFilm() {
 
     // ── per-frame render ──
     let lastActiveRail = -1;
+    let firstDrawn = false; // fade the canvas in over the poster on first real frame
 
     const render = (p: number, rawVel: number) => {
       p = clamp01(p);
@@ -129,6 +127,11 @@ export default function ScrollFilm() {
         drawFrame(a, 1);
         if (blendEnabled && b && b !== a && frac > 0.001) drawFrame(b, frac); // frame blending
         ctx.globalAlpha = 1;
+        if (!firstDrawn) {
+          // hand off seamlessly from the CSS poster (same frame) to the live canvas
+          firstDrawn = true;
+          canvas.style.opacity = "1";
+        }
       }
       const ahead = isMobile ? 24 : 50;
       const behind = isMobile ? 10 : 18;
@@ -301,16 +304,12 @@ export default function ScrollFilm() {
     window.addEventListener("resize", onResize);
     window.addEventListener("orientationchange", onResize);
 
-    // ── kick off frame streaming, then reveal ──
-    loader.onProgress = (loaded) => {
-      const lead = Math.min(36, FRAME_COUNT);
-      setPct(Math.min(100, Math.round((Math.min(loaded, lead) / lead) * 100)));
-    };
-    loader.warmup(36).then(() => {
-      setPct(100);
-      setReady(true);
-      rafId = requestAnimationFrame(loop);
-    });
+    // ── start immediately — no blocking loader ──
+    // The rAF loop runs right away and paints the nearest available frame; the
+    // CSS poster (frame 1) covers the canvas until the first real draw, so there
+    // is never a black screen or a loading gate. Frames stream in the background.
+    loader.warmup(prefersReduced ? 6 : 14);
+    rafId = requestAnimationFrame(loop);
 
     return () => {
       cancelAnimationFrame(rafId);
@@ -324,19 +323,10 @@ export default function ScrollFilm() {
 
   return (
     <>
-      {/* loading veil */}
-      <div className={`loader${ready ? " done" : ""}`} aria-hidden={ready}>
-        <div className="loader-logo">
-          InCruiter<span className="dot">.</span>
-        </div>
-        <div className="loader-bar">
-          <div className="loader-fill" style={{ width: `${pct}%` }} />
-        </div>
-        <div className="loader-pct">LOADING FILM · {pct}%</div>
-      </div>
-
-      {/* fixed cinematic stage */}
+      {/* fixed cinematic stage — the poster (frame 1) shows instantly, the canvas
+          fades in over it on first paint, so there is no loading screen. */}
       <div className="stage" aria-hidden>
+        <div className="poster" />
         <canvas ref={canvasRef} className="film-canvas" />
         <div className="text-scrim" ref={scrimRef} />
         <div className="chroma" />

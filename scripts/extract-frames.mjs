@@ -26,18 +26,23 @@ mkdirSync(outDir, { recursive: true });
 // counter upscale softness, then high-quality WebP. 1440p supersamples to look
 // 4K-equivalent on any real display while staying light to decode/stream
 // (the true detail ceiling is the 720p source, so 4K would add bytes, not detail).
+//
+// Sampled at 12fps (~180 frames, not the source's 24) to roughly HALVE total
+// bytes for bandwidth at scale; canvas frame-blending makes 180 frames scrub as
+// smoothly as the full set.
 const TARGET = "2560:1440";
-console.log(`Extracting frames from ${src} at ${TARGET} ...`);
+const FPS = 12;
+console.log(`Extracting frames from ${src} at ${TARGET} @ ${FPS}fps ...`);
 execFileSync(
   "ffmpeg",
   [
     "-y",
     "-i", src,
     "-vsync", "0",
-    "-vf", `scale=${TARGET}:flags=lanczos+accurate_rnd+full_chroma_int,unsharp=5:5:0.9:5:5:0.0`,
+    "-vf", `fps=${FPS},scale=${TARGET}:flags=lanczos+accurate_rnd+full_chroma_int,unsharp=5:5:0.9:5:5:0.0`,
     "-c:v", "libwebp",
     "-compression_level", "6",
-    "-q:v", "90",
+    "-q:v", "86",
     "-preset", "picture",
     resolve(outDir, "frame_%05d.webp"),
   ],

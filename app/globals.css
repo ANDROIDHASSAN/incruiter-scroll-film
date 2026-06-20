@@ -64,12 +64,27 @@ html.lenis body {
   will-change: transform;
 }
 
+/* Instant hero: frame 1 painted by CSS so there is never a blank/black screen
+   or a loading gate. The canvas fades in over it on first real paint. */
+.poster {
+  position: absolute;
+  inset: 0;
+  background-image: url("/frames/frame_00001.webp");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 0;
+}
+
 .film-canvas {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   display: block;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.45s ease;
 }
 
 /* Atmospheric overlays painted above the canvas */
@@ -459,50 +474,6 @@ html.lenis body {
   box-shadow: 0 0 14px rgba(77, 159, 255, 0.6);
 }
 
-/* ── Loading veil ──────────────────────────────────────────────────────── */
-.loader {
-  position: fixed;
-  inset: 0;
-  z-index: 20;
-  background: #03040a;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1.6rem;
-  transition: opacity 1s ease, visibility 1s;
-}
-.loader.done {
-  opacity: 0;
-  visibility: hidden;
-}
-.loader-logo {
-  font-family: var(--display);
-  font-weight: 700;
-  font-size: clamp(1.6rem, 4vw, 2.6rem);
-  letter-spacing: 0.04em;
-}
-.loader-logo .dot { color: var(--blue); }
-.loader-bar {
-  width: min(280px, 60vw);
-  height: 2px;
-  background: rgba(255, 255, 255, 0.08);
-  overflow: hidden;
-  border-radius: 2px;
-}
-.loader-fill {
-  height: 100%;
-  width: 0%;
-  background: linear-gradient(90deg, var(--blue-deep), var(--blue-bright));
-  transition: width 0.3s ease;
-}
-.loader-pct {
-  font-family: var(--display);
-  font-size: 0.72rem;
-  letter-spacing: 0.3em;
-  color: var(--muted);
-}
-
 /* The tall scroll track that gives the film its length. */
 .scroll-track {
   position: relative;
@@ -511,7 +482,7 @@ html.lenis body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .grain, .scroll-hint .line::after, .loader-fill { animation: none; }
+  .grain, .scroll-hint .line::after { animation: none; }
 }
 
 @media (max-width: 820px) {
