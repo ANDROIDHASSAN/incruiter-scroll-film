@@ -1,0 +1,13 @@
+node_modules
+.next
+out
+.DS_Store
+*.log
+.env*
+next-env.d.ts
+.devlog.txt
+.playwright-mcp
+
+# Heavy source videos — not needed at runtime (frames are committed under public/frames).
+# Re-extract with: npm run frames:extract -- "videos/<file>.mp4"
+videos/
