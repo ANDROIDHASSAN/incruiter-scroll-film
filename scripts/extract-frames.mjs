@@ -22,17 +22,22 @@ if (!existsSync(src)) {
 rmSync(outDir, { recursive: true, force: true });
 mkdirSync(outDir, { recursive: true });
 
-console.log(`Extracting frames from ${src} ...`);
+// Master at 1440p (2× the 720p source) with lanczos + a light unsharp mask to
+// counter upscale softness, then high-quality WebP. 1440p supersamples to look
+// 4K-equivalent on any real display while staying light to decode/stream
+// (the true detail ceiling is the 720p source, so 4K would add bytes, not detail).
+const TARGET = "2560:1440";
+console.log(`Extracting frames from ${src} at ${TARGET} ...`);
 execFileSync(
   "ffmpeg",
   [
     "-y",
     "-i", src,
     "-vsync", "0",
-    "-vf", "scale=1280:720:flags=lanczos",
+    "-vf", `scale=${TARGET}:flags=lanczos+accurate_rnd+full_chroma_int,unsharp=5:5:0.9:5:5:0.0`,
     "-c:v", "libwebp",
     "-compression_level", "6",
-    "-q:v", "82",
+    "-q:v", "90",
     "-preset", "picture",
     resolve(outDir, "frame_%05d.webp"),
   ],

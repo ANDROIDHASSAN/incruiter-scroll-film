@@ -50,6 +50,8 @@ export default function ScrollFilm() {
   useEffect(() => {
     const canvas = canvasRef.current!;
     const ctx = canvas.getContext("2d", { alpha: false, desynchronized: true })!;
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = "high";
     const loader = new FrameLoader(FRAME_COUNT);
 
     const mq = (q: string) => window.matchMedia(q).matches;
@@ -83,12 +85,15 @@ export default function ScrollFilm() {
       canvas.height = ch;
       canvas.style.width = window.innerWidth + "px";
       canvas.style.height = window.innerHeight + "px";
+      // resetting the backing store clears context state — restore high-quality scaling
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = "high";
     };
     resize();
 
     const drawFrame = (frame: Frame, alpha: number) => {
-      const iw = (frame as ImageBitmap).width || (frame as HTMLImageElement).naturalWidth;
-      const ih = (frame as ImageBitmap).height || (frame as HTMLImageElement).naturalHeight;
+      const iw = frame.naturalWidth;
+      const ih = frame.naturalHeight;
       if (!iw || !ih) return;
       const scale = Math.max(cw / iw, ch / ih);
       const w = iw * scale;
@@ -96,7 +101,7 @@ export default function ScrollFilm() {
       const x = (cw - w) / 2;
       const y = (ch - h) / 2;
       ctx.globalAlpha = alpha;
-      ctx.drawImage(frame as CanvasImageSource, x, y, w, h);
+      ctx.drawImage(frame, x, y, w, h);
     };
 
     // ── velocity smoothing ──

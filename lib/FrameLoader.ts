@@ -1,100 +1,117 @@
 import { FRAME_COUNT, FRAME_PATH } from "./story";
 
 /**
- * Progressive frame pipeline.
+ * Progressive frame pipeline (browser-managed memory model).
  *
- * - Decodes WebP frames into ImageBitmaps (GPU-friendly, fast to drawImage).
- * - Prioritises a window around the current playhead (predictive buffering)
- *   then back-fills the rest so the whole film ends up resident in cache.
- * - Falls back to HTMLImageElement if createImageBitmap is unavailable.
+ * Frames are loaded as <img> elements rather than retained ImageBitmaps. The
+ * browser keeps the *encoded* bytes (a few tens of MB for the whole film) and
+ * only ever holds the **decoded** RGBA surface for frames that are actually
+ * painted — evicting the rest under memory pressure. That keeps a high-res
+ * (1440p) film safe on phones, where decoding+retaining all 361 frames would
+ * otherwise need gigabytes of RAM.
+ *
+ * - Warmup eagerly loads a lead-in so the hero never shows a blank canvas.
+ * - The rest streams in the background with bounded concurrency.
+ * - `ensureWindow` prioritises frames around the playhead (predictive buffering).
+ * - Drawing is done by the renderer; `nearest()` guarantees there is always a
+ *   usable frame so there is never a white/black flash.
  */
-export type Frame = ImageBitmap | HTMLImageElement;
+export type Frame = HTMLImageElement;
 
 export class FrameLoader {
   readonly count: number;
-  private cache = new Map<number, Frame>();
-  private inflight = new Set<number>();
-  private useBitmap: boolean;
+  private imgs: (HTMLImageElement | undefined)[];
+  private loaded = 0;
   private destroyed = false;
 
   onProgress?: (loaded: number, total: number) => void;
 
   constructor(count = FRAME_COUNT) {
     this.count = count;
-    this.useBitmap = typeof createImageBitmap === "function";
-  }
-
-  has(i: number) {
-    return this.cache.has(i);
-  }
-
-  get(i: number): Frame | undefined {
-    return this.cache.get(i);
-  }
-
-  /** Nearest already-loaded frame to `i` — guarantees the canvas always has something to draw. */
-  nearest(i: number): Frame | undefined {
-    if (this.cache.has(i)) return this.cache.get(i);
-    for (let r = 1; r < this.count; r++) {
-      if (this.cache.has(i - r)) return this.cache.get(i - r);
-      if (this.cache.has(i + r)) return this.cache.get(i + r);
-    }
-    return undefined;
+    this.imgs = new Array(count).fill(undefined);
   }
 
   private clamp(i: number) {
     return Math.max(1, Math.min(this.count, i));
   }
 
-  private async load(i: number): Promise<void> {
+  has(i: number): boolean {
+    const im = this.imgs[i - 1];
+    return !!im && im.complete && im.naturalWidth > 0;
+  }
+
+  get(i: number): Frame | undefined {
+    const im = this.imgs[i - 1];
+    return im && im.complete && im.naturalWidth > 0 ? im : undefined;
+  }
+
+  /** Nearest already-decoded frame — guarantees the canvas always has something to draw. */
+  nearest(i: number): Frame | undefined {
     i = this.clamp(i);
-    if (this.cache.has(i) || this.inflight.has(i) || this.destroyed) return;
-    this.inflight.add(i);
-    try {
-      if (this.useBitmap) {
-        const res = await fetch(FRAME_PATH(i));
-        const blob = await res.blob();
-        const bmp = await createImageBitmap(blob);
-        if (this.destroyed) {
-          bmp.close();
-          return;
-        }
-        this.cache.set(i, bmp);
-      } else {
-        const img = new Image();
-        img.src = FRAME_PATH(i);
-        img.decoding = "async";
-        await img.decode().catch(() => {});
-        this.cache.set(i, img);
-      }
-      this.onProgress?.(this.cache.size, this.count);
-    } catch {
-      // network hiccup — leave it absent; nearest() covers the gap.
-    } finally {
-      this.inflight.delete(i);
+    if (this.has(i)) return this.get(i);
+    for (let r = 1; r < this.count; r++) {
+      if (this.has(i - r)) return this.get(i - r);
+      if (this.has(i + r)) return this.get(i + r);
     }
+    return undefined;
+  }
+
+  /** Begin loading frame `i` (idempotent). Returns the <img>. */
+  private request(i: number): HTMLImageElement | undefined {
+    i = this.clamp(i);
+    const existing = this.imgs[i - 1];
+    if (existing || this.destroyed) return existing;
+    const im = new Image();
+    im.decoding = "async";
+    const done = () => {
+      if (im.dataset.counted) return;
+      im.dataset.counted = "1";
+      this.loaded++;
+      this.onProgress?.(this.loaded, this.count);
+    };
+    im.addEventListener("load", done, { once: true });
+    im.addEventListener("error", done, { once: true });
+    im.src = FRAME_PATH(i);
+    this.imgs[i - 1] = im;
+    return im;
+  }
+
+  private waitLoad(im: HTMLImageElement): Promise<void> {
+    if (im.complete) return Promise.resolve();
+    return new Promise((res) => {
+      const h = () => res();
+      im.addEventListener("load", h, { once: true });
+      im.addEventListener("error", h, { once: true });
+    });
   }
 
   /**
-   * Eagerly load a small lead-in so the hero never shows a blank canvas,
-   * then stream everything else in the background.
-   * Resolves once `lead` frames are ready.
+   * Eagerly load (and decode) a small lead-in so the hero is sharp immediately,
+   * then stream the remainder in the background. Resolves once `lead` is ready.
    */
   async warmup(lead = 24): Promise<void> {
-    const first: Promise<void>[] = [];
-    for (let i = 1; i <= Math.min(lead, this.count); i++) first.push(this.load(i));
+    const first: Promise<unknown>[] = [];
+    for (let i = 1; i <= Math.min(lead, this.count); i++) {
+      const im = this.request(i);
+      if (im) first.push(im.decode().catch(() => {}));
+    }
     await Promise.all(first);
-    // Background fill — chunked so we never saturate the connection.
     this.fillAll();
   }
 
+  /**
+   * Background fill — bounded concurrency so we never saturate the connection.
+   * Awaits the *load* (not a forced decode) so memory stays at the encoded
+   * footprint; the browser decodes lazily only when a frame is painted.
+   */
   private async fillAll() {
-    const concurrency = 6;
+    const concurrency = 8;
     let next = 1;
     const worker = async () => {
       while (next <= this.count && !this.destroyed) {
         const i = next++;
-        await this.load(i);
+        const im = this.request(i);
+        if (im) await this.waitLoad(im);
       }
     };
     await Promise.all(Array.from({ length: concurrency }, worker));
@@ -106,15 +123,19 @@ export class FrameLoader {
    */
   ensureWindow(center: number, ahead = 40, behind = 12) {
     center = this.clamp(center);
-    for (let i = center; i <= center + ahead; i++) this.load(i);
-    for (let i = center; i >= center - behind; i--) this.load(i);
+    for (let i = center; i <= center + ahead; i++) this.request(i);
+    for (let i = center; i >= center - behind; i--) this.request(i);
   }
 
   destroy() {
     this.destroyed = true;
-    for (const f of this.cache.values()) {
-      if (typeof ImageBitmap !== "undefined" && f instanceof ImageBitmap) f.close();
+    for (const im of this.imgs) {
+      if (im) {
+        im.onload = null;
+        im.onerror = null;
+        im.src = "";
+      }
     }
-    this.cache.clear();
+    this.imgs = [];
   }
 }
